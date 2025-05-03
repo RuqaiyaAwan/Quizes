@@ -38,6 +38,30 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.readAsText(file);
     }
 
+    window.fetchFromURL = async function () {
+        const preview = document.getElementById('preview');
+
+        const txtFileURL = prompt("Enter the URL of the MCQ .txt file:");
+        if (!txtFileURL) return;
+
+        try {
+            const response = await fetch(txtFileURL);
+            if (!response.ok) throw new Error("Failed to fetch MCQs");
+
+            const text = await response.text();
+            parseMCQText(text);
+            preview.innerHTML = parsedMCQs;
+
+            // Clear old user results
+            localStorage.removeItem('userResults');
+
+            alert("MCQs fetched and loaded successfully.");
+        } catch (err) {
+            alert("Error fetching file. Check the URL or your internet connection.");
+            console.error(err);
+        }
+    };
+
     function parseMCQText(text) {
         const lines = text.split('\n');
         let questionIndex = 1;
