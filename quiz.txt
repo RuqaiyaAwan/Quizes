@@ -1,0 +1,17 @@
+Sample MCQ Test
+[TIMER: 2]
+1. What is the capital of France?
+A. London
+B. Berlin
+*C. Paris
+D. Madrid
+2. Which language is used for web development?
+A. Python
+*B. JavaScript
+C. C++
+D. Java
+3. What is the capital of Pakistan?
+A. Karachi
+*B. Islamabad
+C. Lahore
+D. Peshawar
