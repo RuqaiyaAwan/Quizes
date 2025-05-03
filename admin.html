@@ -16,8 +16,11 @@
     </div>
 
     <div class="container hidden" id="admin-panel">
-        <h2>Fetch MCQs from GitHub</h2>
-        <button onclick="loadQuestions()">Fetch MCQs</button>
+        <h2>Upload or Fetch MCQs</h2>
+        <input type="file" id="fileInput">
+        <button onclick="loadQuestions()">Upload from File</button>
+        <br><br>
+        <button onclick="fetchFromURL()">Fetch from URL (e.g., GitHub)</button>
 
         <h3>Preview Loaded Questions:</h3>
         <div id="preview"></div>
