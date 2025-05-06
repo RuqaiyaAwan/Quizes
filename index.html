@@ -1,58 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Simple Quiz</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .question { margin-bottom: 20px; }
-    .options { list-style: none; padding: 0; }
-    .options li { margin: 5px 0; }
-    #timer { font-weight: bold; color: red; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Test Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
 <body>
-  <h1>Quiz</h1>
-  <div id="timer"></div>
-  <div id="quiz-container"></div>
+<!-- Admin Panel button -->
+<button id="admin-panel-btn" class="admin-btn" onclick="window.location.href='admin.html'">Admin Panel</button>
 
-  <script src="quiz.js"></script>
-  <script>
-    const container = document.getElementById("quiz-container");
-    const timerDisplay = document.getElementById("timer");
 
-    let currentQuestion = 0;
-    let timer = quizData.timer * 60;
-    let interval = setInterval(() => {
-      if (timer <= 0) {
-        clearInterval(interval);
-        container.innerHTML = "<h2>Time's up!</h2>";
-        return;
-      }
-      const minutes = Math.floor(timer / 60);
-      const seconds = timer % 60;
-      timerDisplay.textContent = `Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-      timer--;
-    }, 1000);
+<div class="container form-container" id="form-container">
+    <h2>Join the Quiz</h2>
+    <input type="text" placeholder="User Name" id="username">
+    <input type="text" placeholder="Contact" id="contact">
+    <button onclick="validateLogin()">Start Quiz</button>
+    <p id="login-error" style="color:red; font-weight:bold;"></p>
+</div>
 
-    function showQuiz() {
-      quizData.questions.forEach((q, index) => {
-        const questionEl = document.createElement("div");
-        questionEl.className = "question";
-        questionEl.innerHTML = `<p><strong>${index + 1}. ${q.question}</strong></p>`;
-        const optionsList = document.createElement("ul");
-        optionsList.className = "options";
-        q.options.forEach((opt, i) => {
-          const li = document.createElement("li");
-          li.innerHTML = `<input type="radio" name="q${index}" value="${i}"> ${opt}`;
-          optionsList.appendChild(li);
-        });
-        questionEl.appendChild(optionsList);
-        container.appendChild(questionEl);
-      });
-    }
+<div class="container quiz-container hidden" id="quiz-container">
+    <h1>MCQ Test</h1>
+    <div id="timer" class="glow">Time Left: <span id="time">60s</span></div>
+    <form id="quiz-form">
+        <div id="questions-area"></div>
+        <button type="button" onclick="submitQuiz()">Submit</button>
 
-    showQuiz();
-  </script>
+
+    </form>
+    <div id="result" class="hidden"></div>
+</div>
+<script src="quizData.js"></script>
+<script src="users.js"></script>
+<script src="script.js"></script>
 </body>
-</html>
+</html> 
