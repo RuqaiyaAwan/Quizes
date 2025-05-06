@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const secretPassword = "MySuperSecret123";
-    let parsedMCQs = '';
-    let correctAnswers = {};
-    let testTimer = 60;
 
     window.checkAdmin = function () {
         const enteredPassword = document.getElementById('adminPassword').value;
@@ -12,113 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             alert("Wrong password!");
         }
-    }
-
-    window.loadQuestions = function () {
-        const fileInput = document.getElementById('fileInput');
-        const preview = document.getElementById('preview');
-
-        if (fileInput.files.length === 0) {
-            alert("Please select a .txt file.");
-            return;
-        }
-
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-
-        // Clear the previous results upon new file upload
-        localStorage.removeItem('userResults');
-
-        reader.onload = function (e) {
-            const text = e.target.result;
-            parseMCQText(text);
-            preview.innerHTML = parsedMCQs;
-        };
-
-        reader.readAsText(file);
-    }
-
-    window.fetchFromURL = async function () {
-        const preview = document.getElementById('preview');
-
-        const txtFileURL = prompt("Enter the URL of the MCQ .txt file:");
-        if (!txtFileURL) return;
-
-        try {
-            const response = await fetch(txtFileURL);
-            if (!response.ok) throw new Error("Failed to fetch MCQs");
-
-            const text = await response.text();
-            parseMCQText(text);
-            preview.innerHTML = parsedMCQs;
-
-            // Clear old user results
-            localStorage.removeItem('userResults');
-
-            alert("MCQs fetched and loaded successfully.");
-        } catch (err) {
-            alert("Error fetching file. Check the URL or your internet connection.");
-            console.error(err);
-        }
     };
-
-    function parseMCQText(text) {
-        const lines = text.split('\n');
-        let questionIndex = 1;
-        parsedMCQs = '';
-        correctAnswers = {};
-        testTimer = 60;
-        let currentQuestionText = '', currentOptions = '', inputName = '', timerSet = false;
-
-        lines.forEach(line => {
-            const text = line.trim();
-            if (!timerSet && text.startsWith('[TIMER:')) {
-                const match = text.match(/\[TIMER:\s*(\d+)\]/i);
-                if (match) {
-                    testTimer = parseInt(match[1]) * 60;
-                    timerSet = true;
-                }
-            } else if (/^\d+\./.test(text)) {
-                if (currentQuestionText && currentOptions) {
-                    parsedMCQs += `<div class="question"><h3>${currentQuestionText}</h3>${currentOptions}</div>`;
-                    questionIndex++;
-                }
-                currentQuestionText = text;
-                currentOptions = '';
-                inputName = `q${questionIndex}`;
-            } else if (/^[\*\-]?[A-Da-d]\./.test(text)) {
-                const isCorrect = /^\*/.test(text);
-                const cleanOption = text.replace(/^\*\s*/, '');
-                currentOptions += `<label><input type="radio" name="${inputName}" value="${cleanOption}"> ${cleanOption}</label>`;
-                if (isCorrect) {
-                    correctAnswers[inputName] = cleanOption;
-                }
-            }
-        });
-
-        if (currentQuestionText && currentOptions) {
-            parsedMCQs += `<div class="question"><h3>${currentQuestionText}</h3>${currentOptions}</div>`;
-        }
-    }
-
-    window.saveQuestions = function () {
-        if (!parsedMCQs || Object.keys(correctAnswers).length === 0) {
-            alert("No valid questions or correct answers found. Did you mark answers with '*'?");
-            return;
-        }
-
-        // Clear previous results when uploading a new test
-        localStorage.removeItem('userResults');
-
-        localStorage.setItem('mcqData', parsedMCQs);
-        const meta = {
-            correctAnswers: correctAnswers,
-            timeLimit: testTimer,
-            testId: Date.now()
-        };
-        localStorage.setItem('mcqMeta', JSON.stringify(meta));
-        alert('Questions and timer saved successfully!');
-    }
 
     window.downloadCSV = function () {
         const results = JSON.parse(localStorage.getItem('userResults')) || [];
@@ -140,5 +31,5 @@ document.addEventListener('DOMContentLoaded', function () {
         link.download = 'quiz_results.csv';
         link.click();
         URL.revokeObjectURL(url);
-    }
+    };
 });
